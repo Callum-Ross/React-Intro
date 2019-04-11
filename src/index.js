@@ -1,5 +1,7 @@
 import ReactDOM from "react-dom";
 import React, { useState } from "react";
+const API_KEY = "9e22b226934f4df9bbc96b4b4d5504bf";
+import { useNewsArticles } from "./api"; // import from a local file
 
 function Headline(props) {
   return (
@@ -31,11 +33,19 @@ function LikeCounter() {
 }
 
 function App() {
+  const { loading, headlines, error } = useNewsArticles();
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  if (error) {
+    return <p>Something went wrong: {error.message}</p>;
+  }
   return (
     <div className="App">
-      <h1>Like Counter</h1>
-      <Headline title="My first Header" />
-      <Headline title="My second Header" />
+      {headlines.map(headline => (
+        // `headline` is now an object
+        <Headline key={headline.url} title={headline.title} />
+      ))}
     </div>
   );
 }
